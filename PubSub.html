@@ -1,0 +1,69 @@
+<!-- so this is the example of what a homade redux store would look like
+
+there is abunch of it I do not understand but essentially it let's us hold our state in one place, component can then update that so all the
+other comp[onent will knwo they can also subscribe or unsubsribe to it as needed-->
+
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <h1 id='counter'></h1>
+    <script>
+        const renderCounter = (count) => {
+            const html = `The count is ${count}`;
+            document.querySelector('#counter').innerHTML = html;
+        }
+
+        document.querySelector('#counter').addEventListener('click', () => {
+            unsubscribe();
+        })
+
+        const store = {
+            state: 0,
+            // I assume this means update, yes just updates our state 
+            listeners: [],
+            dispatch: function (newState) {
+                this.state = newState;
+                // I think here we are running every function in the listener 
+                this.listeners.forEach((listener) => {
+                    console.log(listener);
+                    listener();
+
+                });
+
+
+            },
+            // I think we are adding functions to our listener so it can do different things??
+            subscribe: function (listener) {
+                this.listeners.push(listener);
+                // if we want to unsubscribe
+                return () => {
+                    this.listeners = this.listeners.filter(_listener => listener !== _listener);
+                };
+            }
+
+        }
+
+        // console.log(store.listeners);
+
+        //so now it's both a subscribe and unsubscribe function?? very confused  
+        // so this gives the listener a function which allows it to subscribe 
+        const unsubscribe = store.subscribe(() => {
+            renderCounter(store.state)
+        })
+
+        store.subscribe(() => {
+            console.log('the store has changed');
+        });
+
+        setInterval(() => {
+            store.dispatch(store.state + 1)
+        }, 500);
+
+        // store.dispatch(store.state + 1)
+    </script>
+
+</body>

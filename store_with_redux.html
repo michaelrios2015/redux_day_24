@@ -1,0 +1,86 @@
+<!-- so this is using redux store in whihc we start off with a state and then use actions to modify that state -->
+
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.0/redux.js"> </script>
+
+</head>
+
+<body>
+    <h1 id='counter'></h1>
+    <script>
+        console.log(Redux);
+        const renderCounter = (count) => {
+            const html = `The count is ${count}`;
+            document.querySelector('#counter').innerHTML = html;
+        }
+
+        document.querySelector('#counter').addEventListener('click', () => {
+            unsubscribe();
+        })
+
+        // so we may have started to set state??
+        const store = Redux.createStore((state = 0, action) => {
+            if (action.type === 'INC') {
+                state = state + 1;
+            }
+            return state;
+        });
+
+        console.log(store.getState());
+        /*    const store = {
+               state: 0,
+               // I assume this means update, yes just updates our state 
+               listeners: [],
+               dispatch: function (newState) {
+                   this.state = newState;
+                   // I think here we are running every function in the listener 
+                   this.listeners.forEach((listener) => {
+                       console.log(listener);
+                       listener();
+   
+                   });
+                   
+   
+               },
+               // I think we are adding functions to our listener so it can do different things??
+               subscribe: function (listener) {
+                   this.listeners.push(listener);
+                   // if we want to unsubscribe
+                   return () => {
+                       this.listeners = this.listeners.filter(_listener => listener !== _listener);
+                   };
+               }
+   
+           }
+   
+           */
+        // console.log(store.listeners);
+
+        //so now it's both a subscribe and unsubscribe function?? very confused  
+        // so this gives the listener a function which allows it to subscribe 
+
+        const unsubscribe = store.subscribe(() => {
+            renderCounter(store.getState());
+        })
+
+
+        store.subscribe(() => {
+            console.log('the store has changed');
+        });
+
+
+        setInterval(() => {
+            store.dispatch({ type: 'INC' })
+        }, 500);
+
+    </script>
+
+</body>
+
+
+</html>
+
+<!-- ok i see why it is a reducer.. since we only want one state when it modifies the state it needs to end up reducing it... 
+    hmmm no that does not entirely make sense but I do feel I understand it a bit better, a series of actions into one action-->
